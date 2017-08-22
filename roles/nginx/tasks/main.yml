@@ -1,0 +1,47 @@
+- name: install nginx-release(nginx.repo) from rpm
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ nginx_release_url }}"
+
+- name: install nginx
+  yum:
+    name: "{{ item }}"
+    state: present
+    enablerepo: nginx
+    disable_gpg_check: yes
+  with_items:
+    - nginx
+  when: not ansible_check_mode
+  notify: start nginx
+
+- name: copy configuration files for nginx
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ nginx_admin_user }}"
+    group: "{{ nginx_admin_group }}"
+    mode: 0644
+    backup: yes
+  with_items:
+    - { src: "default.conf", dest: '/etc/nginx/conf.d/default.conf' }
+    - { src: "nginx.conf", dest: '/etc/nginx/nginx.conf' }
+  register: nginx_configuration
+
+- name: syntax check for nginx configuration ( if error, failed immediately. )
+  shell: /usr/sbin/nginx -t
+  changed_when: False
+
+- name: check running nginx
+  shell: pidof /usr/sbin/nginx
+  check_mode: no
+  register: nginx_status
+  failed_when: False
+  changed_when: False
+
+- name: reload nginx
+  service:
+    name: nginx
+    state: reloaded 
+  when: nginx_configuration.changed and nginx_status.rc == 0

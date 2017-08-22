@@ -1,0 +1,4 @@
+nginx_release_url: "http://nginx.org/packages/centos/{{ ansible_distribution_major_version }}/noarch/RPMS/nginx-release-centos-{{ ansible_distribution_major_version }}-0.el{{ ansible_distribution_major_version }}.ngx.noarch.rpm"
+nginx_admin_user: "nginx"
+nginx_admin_group: "nginx"
+nginx_pid_file: "/var/run/nginx.pid"
