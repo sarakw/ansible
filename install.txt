@@ -6,3 +6,9 @@ yum install nginx
 yum -y --enablerepo=remi-php71,epel install php-fpm php-gd php-gmp php-mbstring php-mcrypt php-opcache php-pdo php-pear-MDB2-Driver-mysqli php-pecl-memcached php-pecl-msgpack php-xml
 
 
+
+
+key_buffer_size = 128M
+read_buffer_size = 1M
+sort_buffer_size = 1M
+read_rnd_buffer_size = 4M
